@@ -8,16 +8,9 @@ const STATUS = {
 };
 
 const addBookHandler = (req, h) => {
-  const {
-    name,
-    year,
-    author,
-    summary,
-    publisher,
-    pageCount,
-    readPage,
-    reading,
-  } = req.payload;
+  const bookInfo = req.payload;
+
+  const { name, pageCount, readPage } = bookInfo;
 
   const id = nanoid(16);
   const finished = (pageCount === readPage);
@@ -26,15 +19,8 @@ const addBookHandler = (req, h) => {
 
   const newBook = {
     id,
-    name,
-    year,
-    author,
-    summary,
-    publisher,
-    pageCount,
-    readPage,
+    ...bookInfo,
     finished,
-    reading,
     insertedAt,
     updatedAt,
   };
