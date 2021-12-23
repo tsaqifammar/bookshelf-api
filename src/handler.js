@@ -103,9 +103,10 @@ const getBookByIdHandler = (req, h) => {
 const updateBookByIdHandler = (req, h) => {
   const { bookId } = req.params;
   const updatedBookInfo = req.payload;
-  const updatedAt = new Date().toISOString();
 
   const { name, readPage, pageCount } = updatedBookInfo;
+  const finished = (pageCount === readPage);
+  const updatedAt = new Date().toISOString();
 
   if (name === undefined) {
     const res = h.response({
@@ -139,6 +140,7 @@ const updateBookByIdHandler = (req, h) => {
   books[idx] = {
     ...books[idx],
     ...updatedBookInfo,
+    finished,
     updatedAt,
   };
 
