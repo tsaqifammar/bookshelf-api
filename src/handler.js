@@ -67,16 +67,36 @@ const addBookHandler = (req, h) => {
   return res;
 };
 
-const getAllBooksHandler = () => ({
-  status: STATUS.SUCCESS,
-  data: {
-    books: books.map((book) => ({
-      id: book.id,
-      name: book.name,
-      publisher: book.publisher,
-    })),
-  },
-});
+const getAllBooksHandler = (req, h) => {
+  const { name, reading, finished } = req.query;
+
+  let allBooks = [...books];
+
+  if (name !== undefined) {
+    allBooks = allBooks.filter((book) => book.name.toLowerCase().includes(name.toLowerCase()));
+  }
+  if (reading !== undefined && ['0', '1'].includes(reading)) {
+    const isBeingRead = (reading === '1');
+    allBooks = allBooks.filter((book) => book.reading === isBeingRead);
+  }
+  if (finished !== undefined && ['0', '1'].includes(finished)) {
+    const isFinished = (finished === '1');
+    allBooks = allBooks.filter((book) => book.finished === isFinished);
+  }
+
+  const res = h.response({
+    status: STATUS.SUCCESS,
+    data: {
+      books: allBooks.map((book) => ({
+        id: book.id,
+        name: book.name,
+        publisher: book.publisher,
+      })),
+    },
+  });
+  res.code(200);
+  return res;
+};
 
 const getBookByIdHandler = (req, h) => {
   const { bookId } = req.params;
